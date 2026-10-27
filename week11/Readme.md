@@ -40,29 +40,48 @@ Inside the folder, create a file named `index.html`. Use the HTML registration f
 Add the following JavaScript inside the HTML file's `<script>` tag.
 
 ```javascript
-document.getElementById("registrationForm").addEventListener("submit", function(event) {
-    event.preventDefault();
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration Form</title>
+</head>
+<body>
+    <h2>Registration Form</h2>
 
-    const username = document.getElementById("username").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const message = document.getElementById("message");
+    <form id="registrationForm">
+        <input id="username" placeholder="Username"><br><br>
+        <input id="email" placeholder="Email"><br><br>
+        <input id="password" type="password" placeholder="Password"><br><br>
+        <button type="submit">Register</button>
+    </form>
 
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    <p id="message"></p>
 
-    if (!username || !email || !password) {
-        message.textContent = "All fields are required!";
-        message.classList.add("error");
-    } else if (!emailPattern.test(email)) {
-        message.textContent = "Invalid email format!";
-        message.classList.add("error");
-    } else {
-        message.textContent = "Registration Successful!";
-        message.classList.remove("error");
-        message.style.color = "green";
-        document.getElementById("registrationForm").reset();
-    }
-});
+    <script>
+        document.getElementById("registrationForm")
+        .addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            let username = document.getElementById("username").value;
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+            let message = document.getElementById("message");
+
+            let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!username || !email || !password)
+                message.textContent = "All fields are required!";
+            else if (!pattern.test(email))
+                message.textContent = "Invalid email format!";
+            else {
+                message.textContent = "Registration Successful!";
+                message.style.color = "green";
+                this.reset();
+            }
+        });
+    </script>
+</body>
+</html>
 ```
 
 **Explanation:** The JavaScript validates the input fields and email format. If all details are valid, it displays `Registration Successful!` and clears the form.
