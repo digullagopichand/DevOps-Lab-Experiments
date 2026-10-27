@@ -42,44 +42,40 @@ Add the following JavaScript inside the HTML file's `<script>` tag.
 ```javascript
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Registration Form</title>
-</head>
+<head><title>Registration Form</title></head>
 <body>
-    <h2>Registration Form</h2>
+<h2>Registration Form</h2>
 
-    <form id="registrationForm">
-        <input id="username" placeholder="Username"><br><br>
-        <input id="email" placeholder="Email"><br><br>
-        <input id="password" type="password" placeholder="Password"><br><br>
-        <button type="submit">Register</button>
-    </form>
+<form id="registrationForm">
+    <input id="username" placeholder="Username"><br><br>
+    <input type="text" id="email" placeholder="Email"><br><br>
+    <input type="password" id="password" placeholder="Password"><br><br>
+    <button type="submit">Register</button>
+</form>
 
-    <p id="message"></p>
+<p id="message"></p>
 
-    <script>
-        document.getElementById("registrationForm")
-        .addEventListener("submit", function(event) {
-            event.preventDefault();
+<script>
+document.getElementById("registrationForm").addEventListener("submit", function(event) {
+    event.preventDefault();
 
-            let username = document.getElementById("username").value;
-            let email = document.getElementById("email").value;
-            let password = document.getElementById("password").value;
-            let message = document.getElementById("message");
+    let username = document.getElementById("username").value;
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+    let message = document.getElementById("message");
+    let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-            let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (!username || !email || !password)
-                message.textContent = "All fields are required!";
-            else if (!pattern.test(email))
-                message.textContent = "Invalid email format!";
-            else {
-                message.textContent = "Registration Successful!";
-                message.style.color = "green";
-                this.reset();
-            }
-        });
-    </script>
+    if (!username || !email || !password)
+        message.textContent = "All fields are required!";
+    else if (!pattern.test(email))
+        message.textContent = "Invalid email format!";
+    else {
+        message.textContent = "Registration Successful!";
+        message.style.color = "green";
+        this.reset();
+    }
+});
+</script>
 </body>
 </html>
 ```
@@ -124,48 +120,33 @@ Create a file named `test.js` in the `RegistrationForm` folder.
 Add the following code:
 
 ```javascript
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Registration Form</title>
-</head>
-<body>
-    <h2>Registration Form</h2>
+const { Builder, By, until } = require('selenium-webdriver');
 
-    <form id="registrationForm">
-        <input id="username" placeholder="Username"><br><br>
-        <input id="email" placeholder="Email"><br><br>
-        <input id="password" type="password" placeholder="Password"><br><br>
-        <button type="submit">Register</button>
-    </form>
+async function test() {
+    let driver = await new Builder().forBrowser('chrome').build();
 
-    <p id="message"></p>
+    try {
+        await driver.get('http://localhost:8081');
 
-    <script>
-        document.getElementById("registrationForm")
-        .addEventListener("submit", function(event) {
-            event.preventDefault();
+        await driver.wait(until.elementLocated(By.id('username')), 10000);
 
-            let username = document.getElementById("username").value;
-            let email = document.getElementById("email").value;
-            let password = document.getElementById("password").value;
-            let message = document.getElementById("message");
+        await driver.findElement(By.id('username')).sendKeys('student1');
+        await driver.findElement(By.id('email')).sendKeys('student1@example.com');
+        await driver.findElement(By.id('password')).sendKeys('password123');
 
-            let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        await driver.findElement(By.css('button[type="submit"]')).click();
 
-            if (!username || !email || !password)
-                message.textContent = "All fields are required!";
-            else if (!pattern.test(email))
-                message.textContent = "Invalid email format!";
-            else {
-                message.textContent = "Registration Successful!";
-                message.style.color = "green";
-                this.reset();
-            }
-        });
-    </script>
-</body>
-</html>
+        let message = await driver.findElement(By.id('message')).getText();
+        console.log('Test Result:', message);
+        console.log(message === 'Registration Successful!' ? 'Test Passed' : 'Test Failed');
+    } catch (e) {
+        console.log('Error:', e.message);
+    } finally {
+        await driver.quit();
+    }
+}
+
+test();
 ```
 
 **Explanation:**
