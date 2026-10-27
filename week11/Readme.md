@@ -105,32 +105,48 @@ Create a file named `test.js` in the `RegistrationForm` folder.
 Add the following code:
 
 ```javascript
-const { Builder, By, until } = require('selenium-webdriver');
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration Form</title>
+</head>
+<body>
+    <h2>Registration Form</h2>
 
-async function testRegistrationForm() {
-    let driver = await new Builder().forBrowser('chrome').build();
+    <form id="registrationForm">
+        <input id="username" placeholder="Username"><br><br>
+        <input id="email" placeholder="Email"><br><br>
+        <input id="password" type="password" placeholder="Password"><br><br>
+        <button type="submit">Register</button>
+    </form>
 
-    try {
-        await driver.get('http://localhost:8080');
+    <p id="message"></p>
 
-        await driver.findElement(By.id('username')).sendKeys('student1');
-        await driver.findElement(By.id('email')).sendKeys('student1@example.com');
-        await driver.findElement(By.id('password')).sendKeys('password123');
+    <script>
+        document.getElementById("registrationForm")
+        .addEventListener("submit", function(event) {
+            event.preventDefault();
 
-        await driver.findElement(By.css('button[type="submit"]')).click();
+            let username = document.getElementById("username").value;
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+            let message = document.getElementById("message");
 
-        await driver.wait(until.elementLocated(By.id('message')), 5000);
+            let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        const message = await driver.findElement(By.id('message')).getText();
-        console.log('Test Result:', message);
-
-        console.log(message === 'Registration Successful!' ? 'Test Passed' : 'Test Failed');
-    } finally {
-        await driver.quit();
-    }
-}
-
-testRegistrationForm();
+            if (!username || !email || !password)
+                message.textContent = "All fields are required!";
+            else if (!pattern.test(email))
+                message.textContent = "Invalid email format!";
+            else {
+                message.textContent = "Registration Successful!";
+                message.style.color = "green";
+                this.reset();
+            }
+        });
+    </script>
+</body>
+</html>
 ```
 
 **Explanation:**
